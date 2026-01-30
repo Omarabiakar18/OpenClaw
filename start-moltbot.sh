@@ -201,11 +201,17 @@ if (process.env.DISCORD_BOT_TOKEN) {
 }
 
 // Slack configuration
-if (process.env.SLACK_BOT_TOKEN && process.env.SLACK_APP_TOKEN) {
+if (process.env.SLACK_BOT_TOKEN && process.env.SLACK_APP_TOKEN && process.env.SLACK_DISABLED !== 'true') {
     config.channels.slack = config.channels.slack || {};
     config.channels.slack.botToken = process.env.SLACK_BOT_TOKEN;
     config.channels.slack.appToken = process.env.SLACK_APP_TOKEN;
     config.channels.slack.enabled = true;
+} else {
+    // Disable Slack plugin if tokens not set or SLACK_DISABLED=true
+    delete config.channels.slack;
+    config.plugins = config.plugins || {};
+    config.plugins.entries = config.plugins.entries || {};
+    config.plugins.entries.slack = { enabled: false };
 }
 
 // Base URL override (e.g., for Cloudflare AI Gateway)
